@@ -1,16 +1,37 @@
 # Reproducible Research: Peer Assessment 1
 
 
+```r
 ## Loading and preprocessing the data
 
 library(plyr)
 library(timeDate)
+```
+
+```
+## Warning: package 'timeDate' was built under R version 3.2.3
+```
+
+```r
 library(chron)
+```
+
+```
+## Warning: package 'chron' was built under R version 3.2.3
+```
+
+```r
 library(ggplot2)
-library(gridExtra)
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.2.3
+```
+
+```r
 library(lattice)
 #options(echo=TRUE)
-setwd("~/selfdev/Coursera/Course 5 - Reproducible Research/Week 1")
+#setwd("~/selfdev/Coursera/Course 5 - Reproducible Research/Week 1")
 #Download the file and unzip it if it does not exist(Check for the constituent file)
 if(!file.exists("activity.csv")) {
   file <- tempfile()
@@ -18,6 +39,7 @@ if(!file.exists("activity.csv")) {
   unzip(file) # unzip the file
   unlink(file) # remove the temporary file
 }
+```
 
 #Read data and ignore nulls(NA values)
 fitnessData = read.csv(file="activity.csv",colClasses =  c("integer", "character", "character"))
@@ -90,4 +112,6 @@ qplot(aggnFitnessData$Steps, geom="histogram", xlab = "Steps by Day", ylab = "Fr
 
 ## Are there differences in activity patterns between weekdays and weekends?
 xyplot(steps~interval|weekend, data=normalisedData, type='l', layout=c(1, 2))
+
+```
 

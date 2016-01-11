@@ -30,8 +30,6 @@ if(!file.exists("activity.csv")) {
 
 ```
 
-```{r, echo=TRUE}
-
 #Read data and ignore nulls(NA values)
 fitnessData = read.csv(file="activity.csv",colClasses =  c("integer", "character", "character"))
 fitnessData$date<-as.Date(fitnessData$date,format="%Y-%m-%d" ) #Convert dates from string to date
@@ -48,8 +46,7 @@ names(aggFitnessData)<-c("Date","Steps")
 
 
 qplot(aggFitnessData$Steps, geom="histogram", xlab = "Steps by Day", ylab = "Frequency",col=I("black"),fill=I("blue"),bins=50)
-```
-```{r, echo=TRUE}
+
 meanSteps = mean(aggFitnessData$Steps)
 medianSteps = median(aggFitnessData$Steps)
 
@@ -58,21 +55,17 @@ medianstr = sprintf("The median number of steps per day = %f",medianSteps)
 
 print(meanstr)
 print(medianstr)
-```
-```{r, echo=TRUE}
+
 ## What is the average daily activity pattern?
 meanByInterval <- aggregate(nonNullfdata$steps,list(nonNullfdata$interval), mean) 
 names(meanByInterval)<-c("Interval","MeanSteps")
 xyplot(MeanSteps ~ Interval, data=meanByInterval, type="l", grid=TRUE, ylab="Number of steps", xlab="5-minute interval", main="Average steps by 5-minutes intervals")
-```
-```{r, echo=TRUE}
+
 maxSteps = max(meanByInterval$MeanSteps)
 maxIndex=which(meanByInterval$MeanSteps==maxSteps)
 maxinterval = meanByInterval$Interval[maxIndex]
 maxstr= sprintf("The interval in which max number of steps occured is %g", maxinterval)
 print(maxstr)
-```
-```{r, echo=TRUE}
 
 
 
@@ -81,8 +74,7 @@ print(maxstr)
 totalNA = nrow(fitnessData) - nrow(nonNullfdata)
 NAstr= sprintf("The number of rows with null values is %g", totalNA)
 print(NAstr)
-```
-```{r, echo=TRUE}
+
 normalisedData<-fitnessData
 
 for (i in 1:nrow(normalisedData)){
@@ -104,8 +96,6 @@ mediannstr = sprintf("The median number of steps per day = %f",mediannSteps)
 
 print(meannstr)
 print(mediannstr)
-```
-```{r, echo=TRUE}
 
 qplot(aggnFitnessData$Steps, geom="histogram", xlab = "Steps by Day", ylab = "Frequency",col=I("black"),fill=I("blue"),bins=50)
 

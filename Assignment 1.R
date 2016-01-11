@@ -1,13 +1,3 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
-
-
-## Loading and preprocessing the data
-
 library(plyr)
 library(timeDate)
 library(chron)
@@ -32,15 +22,10 @@ fitnessData[,"weekend"]<-as.factor(weekEnd) # add weekend as a factor to origina
 fitnessData$interval=as.numeric(fitnessData$interval)
 nonNullfdata = na.omit(fitnessData) #Create a separate set of non-NA values
 
-## What is mean total number of steps taken per day?
-
+##What is mean total number of steps taken per day?
 aggFitnessData = aggregate(nonNullfdata$steps,list(nonNullfdata$date), sum)
 rename(aggFitnessData,c("Group.1" = "Date", "x"="Steps"))
 names(aggFitnessData)<-c("Date","Steps")
-
-
-qplot(aggFitnessData$Steps, geom="histogram", xlab = "Steps by Day", ylab = "Frequency",col=I("black"),fill=I("blue"),bins=50)
-
 meanSteps = mean(aggFitnessData$Steps)
 medianSteps = median(aggFitnessData$Steps)
 
@@ -50,20 +35,18 @@ medianstr = sprintf("The median number of steps per day = %f",medianSteps)
 print(meanstr)
 print(medianstr)
 
-## What is the average daily activity pattern?
+grid.arrange(qplot(aggFitnessData$Steps, geom="histogram", xlab = "Steps by Day", ylab = "Frequency",col=I("black"),fill=I("blue"),bins=50))
+
+
 meanByInterval <- aggregate(nonNullfdata$steps,list(nonNullfdata$interval), mean) 
 names(meanByInterval)<-c("Interval","MeanSteps")
-xyplot(MeanSteps ~ Interval, data=meanByInterval, type="l", grid=TRUE, ylab="Number of steps", xlab="5-minute interval", main="Average steps by 5-minutes intervals")
+grid.arrange(xyplot(MeanSteps ~ Interval, data=meanByInterval, type="l", grid=TRUE, ylab="Number of steps", xlab="5-minute interval", main="Average steps by 5-minutes intervals"))
 
 maxSteps = max(meanByInterval$MeanSteps)
 maxIndex=which(meanByInterval$MeanSteps==maxSteps)
 maxinterval = meanByInterval$Interval[maxIndex]
 maxstr= sprintf("The interval in which max number of steps occured is %g", maxinterval)
 print(maxstr)
-
-
-
-## Imputing missing values
 
 totalNA = nrow(fitnessData) - nrow(nonNullfdata)
 NAstr= sprintf("The number of rows with null values is %g", totalNA)
@@ -91,8 +74,9 @@ mediannstr = sprintf("The median number of steps per day = %f",mediannSteps)
 print(meannstr)
 print(mediannstr)
 
-qplot(aggnFitnessData$Steps, geom="histogram", xlab = "Steps by Day", ylab = "Frequency",col=I("black"),fill=I("blue"),bins=50)
+grid.arrange(xyplot(steps~interval|weekend, data=normalisedData, type='l', layout=c(1, 2)))
 
-## Are there differences in activity patterns between weekdays and weekends?
-xyplot(steps~interval|weekend, data=normalisedData, type='l', layout=c(1, 2))
+
+
+
 

@@ -9,37 +9,36 @@ output:
   pdf_document: default
 ---
 
-```{r, echo=TRUE}
-## Loading and preprocessing the data
 
+## Loading and preprocessing the data
+```{r, echo=TRUE}
 library(plyr)
 library(timeDate)
 library(chron)
 library(ggplot2)
 library(lattice)
-#options(echo=TRUE)
-#setwd("~/selfdev/Coursera/Course 5 - Reproducible Research/Week 1")
+```
 #Download the file and unzip it if it does not exist(Check for the constituent file)
+```{r, echo=TRUE}
 if(!file.exists("activity.csv")) {
   file <- tempfile()
   download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip",file)
   unzip(file) # unzip the file
   unlink(file) # remove the temporary file
 }
-
-
 ```
 
 #Read data and ignore nulls(NA values)
+```{r, echo=TRUE}
 fitnessData = read.csv(file="activity.csv",colClasses =  c("integer", "character", "character"))
 fitnessData$date<-as.Date(fitnessData$date,format="%Y-%m-%d" ) #Convert dates from string to date
 weekEnd = (is.weekend(fitnessData$date))  #create vector with weekend indicator
 fitnessData[,"weekend"]<-as.factor(weekEnd) # add weekend as a factor to original data
 fitnessData$interval=as.numeric(fitnessData$interval)
 nonNullfdata = na.omit(fitnessData) #Create a separate set of non-NA values
-
+```
 ## What is mean total number of steps taken per day?
-
+```{r, echo=TRUE}
 aggFitnessData = aggregate(nonNullfdata$steps,list(nonNullfdata$date), sum)
 rename(aggFitnessData,c("Group.1" = "Date", "x"="Steps"))
 names(aggFitnessData)<-c("Date","Steps")
@@ -55,8 +54,9 @@ medianstr = sprintf("The median number of steps per day = %f",medianSteps)
 
 print(meanstr)
 print(medianstr)
-
+```
 ## What is the average daily activity pattern?
+```{r, echo=TRUE}
 meanByInterval <- aggregate(nonNullfdata$steps,list(nonNullfdata$interval), mean) 
 names(meanByInterval)<-c("Interval","MeanSteps")
 xyplot(MeanSteps ~ Interval, data=meanByInterval, type="l", grid=TRUE, ylab="Number of steps", xlab="5-minute interval", main="Average steps by 5-minutes intervals")
@@ -66,11 +66,11 @@ maxIndex=which(meanByInterval$MeanSteps==maxSteps)
 maxinterval = meanByInterval$Interval[maxIndex]
 maxstr= sprintf("The interval in which max number of steps occured is %g", maxinterval)
 print(maxstr)
-
+```
 
 
 ## Imputing missing values
-
+```{r, echo=TRUE}
 totalNA = nrow(fitnessData) - nrow(nonNullfdata)
 NAstr= sprintf("The number of rows with null values is %g", totalNA)
 print(NAstr)
@@ -83,8 +83,9 @@ for (i in 1:nrow(normalisedData)){
       normalisedData$steps[i] = value
     }
 }
-
+```
 ##What is mean total number of steps taken per day?
+```{r, echo=TRUE}
 aggnFitnessData = aggregate(normalisedData$steps,list(normalisedData$date), sum)
 rename(aggnFitnessData,c("Group.1" = "Date", "x"="Steps"))
 names(aggnFitnessData)<-c("Date","Steps")
@@ -98,9 +99,11 @@ print(meannstr)
 print(mediannstr)
 
 qplot(aggnFitnessData$Steps, geom="histogram", xlab = "Steps by Day", ylab = "Frequency",col=I("black"),fill=I("blue"),bins=50)
-
-## Are there differences in activity patterns between weekdays and weekends?
-xyplot(steps~interval|weekend, data=normalisedData, type='l', layout=c(1, 2))
-
 ```
+## Are there differences in activity patterns between weekdays and weekends?
+```{r, echo=TRUE}
+xyplot(steps~interval|weekend, data=normalisedData, type='l', layout=c(1, 2))
+```
+
+
 
